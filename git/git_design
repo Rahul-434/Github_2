@@ -1,8 +1,12 @@
-body {
-  background-color: #f0f0f0;
-  color: #333;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Red Text</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <p class="red-text">How are you?</p>
+</body>
+</html>
 
-a {
-  color: #007acc;
-}

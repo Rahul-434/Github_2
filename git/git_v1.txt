@@ -10,4 +10,17 @@ This is version 8
 This is last version for today
 hi git how are you
 gi git gitgit add
-git git git 
+git git git git 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Red Text</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <p class="red-text">How are you?</p>
+</body>
+</html>
+

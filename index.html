@@ -1,25 +1,123 @@
-<>print("hello")
-<>
-<>print("world")<>
-<>input("please enter your name:  ")<>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hello World Example</title>
+  <title>Real-Time Store Inventory with UOM</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 80%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background: #f2f2f2; }
+    input, select { padding: 5px; margin: 3px; }
+    button { padding: 6px 12px; margin: 3px; cursor: pointer; }
+  </style>
 </head>
 <body>
+  <h2>📦 Real-Time Store Inventory (with UOM)</h2>
+
+  <!-- Add New Item Section -->
+  <h3>Add New Item</h3>
+  <input type="text" id="itemName" placeholder="Item name">
+  <input type="number" id="itemQty" placeholder="Starting Qty">
+  <select id="itemUom">
+    <option value="Pcs">Pcs</option>
+    <option value="Kg">Kg</option>
+    <option value="Ltr">Ltr</option>
+    <option value="Box">Box</option>
+  </select>
+  <button onclick="addItem()">Add Item</button>
+
+  <!-- Inventory Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>UOM</th>
+        <th>Current Stock</th>
+        <th>Credit (Add Stock)</th>
+        <th>Debit (Sell)</th>
+      </tr>
+    </thead>
+    <tbody id="inventory">
+      <!-- Items will appear here -->
+    </tbody>
+  </table>
+
   <script>
-    // Print to the web page
-    document.write("hello<br>");
-    document.write("world<br>");
+    function addItem() {
+      let name = document.getElementById("itemName").value.trim();
+      let qty = Number(document.getElementById("itemQty").value);
+      let uom = document.getElementById("itemUom").value;
 
-    // Ask for user input
-    let name = prompt("please enter your name: ");
+      if (name === "" || isNaN(qty) || qty < 0) {
+        alert("Enter valid item name and quantity.");
+        return;
+      }
 
-    // Show the entered name
-    document.write("You entered: " + name);
+      let safeId = name.toLowerCase().replace(/\s+/g, "-");
+
+      // prevent duplicates
+      if (document.getElementById("row-" + safeId)) {
+        alert("Item already exists!");
+        return;
+      }
+
+      let table = document.getElementById("inventory");
+      let row = document.createElement("tr");
+      row.id = "row-" + safeId;
+
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>${uom}</td>
+        <td id="qty-${safeId}">${qty}</td>
+        <td>
+          <input type="number" id="credit-${safeId}" placeholder="Enter Qty">
+          <button onclick="creditStock('${safeId}')">➕ Add</button>
+        </td>
+        <td>
+          <input type="number" id="debit-${safeId}" placeholder="Enter Qty">
+          <button onclick="debitStock('${safeId}')">➖ Sell</button>
+        </td>
+      `;
+
+      table.appendChild(row);
+
+      // clear input
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemQty").value = "";
+    }
+
+    function creditStock(id) {
+      let qtyElement = document.getElementById("qty-" + id);
+      let currentQty = Number(qtyElement.innerText);
+      let addValue = Number(document.getElementById("credit-" + id).value);
+
+      if (isNaN(addValue) || addValue <= 0) {
+        alert("Enter a valid number to add.");
+        return;
+      }
+
+      qtyElement.innerText = currentQty + addValue;
+      document.getElementById("credit-" + id).value = "";
+    }
+
+    function debitStock(id) {
+      let qtyElement = document.getElementById("qty-" + id);
+      let currentQty = Number(qtyElement.innerText);
+      let sellValue = Number(document.getElementById("debit-" + id).value);
+
+      if (isNaN(sellValue) || sellValue <= 0) {
+        alert("Enter a valid number to sell.");
+        return;
+      }
+      if (sellValue > currentQty) {
+        alert("Not enough stock available!");
+        return;
+      }
+
+      qtyElement.innerText = currentQty - sellValue;
+      document.getElementById("debit-" + id).value = "";
+    }
   </script>
 </body>
 </html>
